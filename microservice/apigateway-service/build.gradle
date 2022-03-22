@@ -23,20 +23,10 @@ ext {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.4'
-
-
-    implementation 'org.modelmapper:modelmapper:2.3.8'
 
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.h2database:h2:2.1.210'
-
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -46,6 +36,7 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()
