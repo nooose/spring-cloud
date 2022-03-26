@@ -1,7 +1,8 @@
-package com.example.catalogservice.jpa;
+package com.example.orderservice.jpa;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface CatalogRepository extends CrudRepository<CatalogEntity, Long> {
-    CatalogEntity findByProductId(String productId);
+public interface OrderRepository extends CrudRepository<OrderEntity, Long> {
+    OrderEntity findByOrderId(String orderId);
+    Iterable<OrderEntity> findByUserId(String userId);
 }
