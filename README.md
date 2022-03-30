@@ -16,6 +16,7 @@
 * Port: 9001 (default)
 * Port: 9002 ~ 9004
 * User 생성, 조회 기능
+* 로그인 기능 POST 요청 (Spring security) 
 
 ### Catalog Service
 * 상품 등록, 조회 기능
