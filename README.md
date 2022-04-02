@@ -7,6 +7,7 @@
 
 
 ### API Gateway
+- JWT 인증 필터
 #### 로드밸런싱 목록
 * user-serivce
 * catalog-service
@@ -17,6 +18,7 @@
 * Port: 9002 ~ 9004
 * User 생성, 조회 기능
 * 로그인 기능 POST 요청 (Spring security) 
+    - JWT 발급
 
 ### Catalog Service
 * 상품 등록, 조회 기능

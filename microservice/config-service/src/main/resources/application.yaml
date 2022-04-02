@@ -7,5 +7,14 @@ spring:
   cloud:
     config:
       server:
+        native:
+          search-locations: file://${user.dir}/..config
+
         git:
-          uri: file://${user.dir}/../config
+#          uri: file://${user.dir}/../config
+          uri: https://github.com/nooose/spring-cloud
+          searchPaths: '{microservice/config}'
+          default-label: master
+          # private repository
+#          username:
+#          password:

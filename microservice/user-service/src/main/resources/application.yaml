@@ -32,9 +32,17 @@ logging:
   level:
     com.example.userservice: DEBUG
 
-token:
-  expiration_time: 86400000 # 하루
-  secret: user_token
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans
+
+# spring-cloud 서비스에서 가져온다.
+#token:
+#  expiration_time: 86400000 # 하루
+#  secret: user_token
 
 
 
