@@ -26,7 +26,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 //        http.authorizeHttpRequests().antMatchers("/users/**").permitAll();
         http.authorizeRequests().antMatchers("/actuator/**").permitAll();
         http.authorizeRequests().antMatchers("/**")
-                .hasIpAddress("172.30.1.58")
+                .hasIpAddress("192.168.0.96")
                 .and()
                 .addFilter(getAuthenticationFilter());
 
