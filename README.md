@@ -177,3 +177,102 @@ create table orders (
     }'| curl -X POST -d @- http://localhost:8083/connectors --header "content-Type:application/json"
     ```
 
+# 컨테이너 배포
+
+## 도커 네트워크
+```bash
+# 가상 네트워크 생성
+docker network create --gateway 172.18.0.1 --subnet 172.18.0.0/16 $NETWORK_NAME
+
+# 네트워크 리스트
+docker network ls
+
+# 특정 네트워크 확인
+docker network inspect $NETWORK_NAME
+```
+
+
+## 컨테이너 실행
+```bash
+# config-service
+docker run -d -p 8888:8888 --network $NETWORK_NAME \
+    --name config-service config-service:1.0
+
+# discovery-service
+docker run -d -p 8761:8761 --network $NETWORK_NAME \
+    -e "spring.cloud.config.uri=http://config-service:8888" \
+    --name discovery-service discovery-service:1.0
+
+# apigateway-service
+docker run -d -p 8000:8000 --network $NETWORK_NAME \
+    -e "spring.cloud.config.uri=http://config-service:8888" \
+    -e "eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka/" \
+    --name apigateway-service apigateway-service:1.0
+
+
+```
+> MariaDB Dockerfile
+```Docker
+FROM mariadb
+ENV MYSQL_ROOT_PASSWORD test1357
+ENV MYSQL_DATABASE mydb
+# COPY ./mysql_data/mysql /var/lib/mysql
+EXPOSE 3306
+ENTRYPOINT ["mysqld", "--user=root"]
+```
+```bash
+# MariaDB
+docker run -d -p 3306:3306  --network $NETWORK_NAME \
+    --name mariadb mariadb:1.0
+```
+
+```bash
+# zookeepr & kafka
+# kafka 디렉터리에 위치
+docker-compose up -d
+
+# zipkin
+docker run -d -p 9411:9411 \
+    --network $NETWORK_NAME \
+    --name zipkin \
+    openzipkin/zipkin
+
+
+# Prometheus
+docker run -d -p 9090:9090 \
+    --network $NETWORK_NAME \
+    --name prometheus \
+    -v /path/to/prometheus.yml:/etc/prometheus/prometheus.yml \
+    prom/prometheus 
+
+# Grafana
+docker run -d -p 3000:3000 \
+    --network $NETWORK_NAME \
+    --name grafana \
+    grafana/grafana     
+
+# user-service
+docker run -d --network $NETWORK_NAME \
+    --name user-service \
+    -e "spring.cloud.config.uri=http://config-service:8888" \
+    -e "spring.zipkin.base-url=http://zipkin:9411" \
+    -e "eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka/" \
+    -e "logging.file=/api-logs/users-ws.log" \
+    user-service:1.0
+
+# order-service
+docker run -d --network $NETWORK_NAME \
+    --name order-service \
+    -e "spring.zipkin.base-url=http://zipkin:9411" \
+    -e "eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka/" \
+    -e "spring.datasource.url=jdbc:mariadb://mariadb:3306/mydb" \
+    -e "logging.file=/api-logs/orders-ws.log" \
+    order-service:1.0
+
+# catalog-service
+docker run -d --network $NETWORK_NAME \
+    --name catalog-service \
+    -e "eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka/" \
+    -e "logging.file=/api-logs/catalogs-ws.log" \
+    catalog-service:1.0
+```

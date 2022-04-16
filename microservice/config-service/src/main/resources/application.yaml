@@ -12,7 +12,8 @@ spring:
         native:
           search-locations: file://${user.dir}/..config
         git:
-          uri: file://${user.dir}/../config
+          uri: file://./config
+#          uri: file://${user.dir}/../config
 #          uri: https://github.com/nooose/spring-cloud
           default-label: master
           # private repository
